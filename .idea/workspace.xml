@@ -2,10 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="0ee7f2be-4b1a-4863-9f22-7636a3efda58" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/DrabSport/Gym/forms.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/DrabSport/Gym/validators.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DrabSport/Gym/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/DrabSport/Gym/models.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/DrabSport/Gym/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/DrabSport/Gym/views.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -47,7 +43,7 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$USER_HOME$/workspace/Scrum/WAR_SPY_S_204_ScrumLab" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
@@ -60,6 +56,7 @@
       <updated>1611663176071</updated>
       <workItem from="1611663183473" duration="915000" />
       <workItem from="1611664154540" duration="9876000" />
+      <workItem from="1611826081644" duration="338000" />
     </task>
     <servers />
   </component>

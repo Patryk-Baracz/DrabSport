@@ -1,14 +1,14 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
-from .models import UserData, Exercise
+from .models import UserData, Exercise, TrainingPlan, ExerciseSet
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.views import View
 from .forms import LoginForm, CreateUserForm
 from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMixin
-from django.contrib.auth.decorators import login_required
 from datetime import date
+
 
 class LoginUserView(View):
     def get(self, request):
@@ -88,20 +88,23 @@ class UserDataViewCreate(LoginRequiredMixin, CreateView):
                 dictionary[field] = getattr(last_data, field)
             return dictionary
 
+
 class UserDataViewUpdate(LoginRequiredMixin, UpdateView):
     login_url = '/login/'
     redirect_field_name = 'redirect_to'
     model = UserData
     fields = ['age', 'height', 'weight', 'muscle_weight', 'fat_weight', 'metabolic_age',
-                      'chest_circuit', 'biceps_circuit', 'biceps_circuit_tight', 'buttock_circuit', 'thigh_circuit',
-                      'waist_circuit', 'calf_circuit']
+              'chest_circuit', 'biceps_circuit', 'biceps_circuit_tight', 'buttock_circuit', 'thigh_circuit',
+              'waist_circuit', 'calf_circuit']
     success_url = '/'
+
 
 class ExerciseCreateView(PermissionRequiredMixin, CreateView):
     permission_required = 'Gym.add_exercise'
     model = Exercise
     fields = ['name', 'description', 'link']
     success_url = '/exercise_list/'
+
 
 class ExerciseUpdateView(PermissionRequiredMixin, UpdateView):
     permission_required = 'Gym.update_exercise'
@@ -115,9 +118,40 @@ class ExerciseDeleteView(PermissionRequiredMixin, DeleteView):
     model = Exercise
     success_url = '/exercise_list/'
 
+
 class ExerciseListView(PermissionRequiredMixin, View):
     permission_required = 'Gym.view_exercise'
+
     def get(self, request):
         exercises = Exercise.objects.all()
         return render(request, 'exercise_list.html', {"exercises": exercises})
 
+class TrainingPlanCreateView(PermissionRequiredMixin, CreateView):
+    permission_required = 'Gym.add_trainingplan'
+    model = TrainingPlan
+    fields = ['name', 'user']
+    success_url = '/'
+
+class UserListView(PermissionRequiredMixin, View):
+    permission_required = 'Gym.view_user'
+
+    def get(self, request):
+        users = User.objects.all()
+        return render(request, 'user_list.html', {"users": users})
+
+class UserPlanListView(LoginRequiredMixin, View):
+    def get(self, request, pk):
+        plans = TrainingPlan.objects.filter(user=pk)
+        return render(request, 'user_plan_list.html', {"plans": plans})
+
+class TrainingPlanDetailView(LoginRequiredMixin, View):
+    def get(self, request, pk):
+        plan = TrainingPlan.objects.get(pk=pk)
+        print(plan.exercise)
+        return render(request, 'trainingplan_detail.html', {"plan": plan})
+
+
+
+class ExerciseSetAddView(PermissionRequiredMixin, CreateView):
+    permission_required = 'Gym.add_exerciseset'
+    model = ExerciseSet

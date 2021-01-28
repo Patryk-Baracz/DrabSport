@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<ul>
+{% for plan in plans %}
+    <li>
+        <h2>{{plan.name}}</h2><br>
+        <a href="/user_plan_detail/{{plan.pk}}/"><button>Podgląd</button></a>
+    </li>
+
+{% endfor %}
+</ul>
+{% endblock %}
+</body>
+</html>

@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>{{plan.name}}</h1><br>
+
+<table>
+    <th>
+        <td>Nazwa ćwiczenia</td><td>Liczba serii</td><td>Liczba powtórzeń</td><td>Obciążenie</td>
+    </th>
+    {% if plan.exercise %}
+    {% for exercise in plan.exercise %}
+    <tr>
+        <td>exercise.exercise</td><td>exercise.exercise_rounds</td><td>exercise.exercise_reps</td><td>exercise.exercise_weight</td>
+    </tr>
+    {% endfor %}
+    {% endif %}
+</table>
+{% endblock %}
+</body>
+</html>

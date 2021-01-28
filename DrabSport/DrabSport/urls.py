@@ -16,7 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from Gym.views import LoginUserView, LogoutUserView, Home, AddUserView, UserDataViewCreate, ExerciseCreateView, \
-    ExerciseUpdateView, ExerciseDeleteView, ExerciseListView, UserDataViewUpdate
+    ExerciseUpdateView, ExerciseDeleteView, ExerciseListView, UserDataViewUpdate, TrainingPlanCreateView, UserListView, UserPlanListView, TrainingPlanDetailView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -30,6 +30,10 @@ urlpatterns = [
     path('exercise_delete/<int:pk>/', ExerciseDeleteView.as_view()),
     path('exercise_list/', ExerciseListView.as_view()),
     path('userdata_update/<int:pk>/', UserDataViewUpdate.as_view()),
+    path('training_create/', TrainingPlanCreateView.as_view()),
+    path('user_plan_list/<int:pk>/', UserPlanListView.as_view()),
+    path('user_list/', UserListView.as_view()),
+    path('user_plan_detail/<int:pk>/', TrainingPlanDetailView.as_view()),
 
 
 ]
