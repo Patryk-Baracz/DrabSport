@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% block content %}
+    <h1>Jesteś pewny, że chcesz usunąć to ćwiczenie?</h1>
+    <form method="post">
+        {% csrf_token %}
+        <input type="submit" value="Usuń!">
+        <a href="/exercise_list/"><button>Nie</button></a>
+    </form>
+{% endblock %}

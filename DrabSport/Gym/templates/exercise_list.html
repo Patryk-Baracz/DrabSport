@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block content %}
+<a href="/exercise_add/"><button>Dodaj nowe ćwiczenie</button></a>
+<ul>
+{% for exercise in exercises %}
+    <li>
+        <h2>{{exercise.name}}</h2><br>
+        {{exercise.description}}<br>
+        <a href="{{exercise.link}}">film instruktażowy</a><br>
+        <a href="/exercise_edit/{{exercise.pk}}/"><button>Edytuj</button></a><a href="/exercise_delete/{{exercise.pk}}/"><button>Usuń</button></a>
+    </li>
+
+{% endfor %}
+</ul>
+{% endblock %}
+</body>
+</html>

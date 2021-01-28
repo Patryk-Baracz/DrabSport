@@ -1,0 +1,31 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>DrabSport</title>
+    <link rel="stylesheet" href='{% static "css/styles.css" %}'>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+<header>
+    {% if user.username %}
+    <a href="/logout/">
+        <button>Wyloguj</button>
+    </a>
+    {% else %}
+    <a href="/login/">
+        <button>Zaloguj</button>
+    </a>
+    {% endif %}
+    <a href="/create_user/">
+        <button>Zarejestruj</button>
+    </a><br>
+    {% if user.username %}Zalogowany jako: {{user.username}} {% endif %}
+</header>
+
+{% block content %} {% endblock %}
+
+</body>
+</html>

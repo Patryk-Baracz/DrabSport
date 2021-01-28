@@ -15,7 +15,21 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from Gym.views import LoginUserView, LogoutUserView, Home, AddUserView, UserDataViewCreate, ExerciseCreateView, \
+    ExerciseUpdateView, ExerciseDeleteView, ExerciseListView, UserDataViewUpdate
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('login/', LoginUserView.as_view()),
+    path('logout/', LogoutUserView.as_view()),
+    path('', Home.as_view()),
+    path('create_user/', AddUserView.as_view()),
+    path('user_data/', UserDataViewCreate.as_view()),
+    path('exercise_add/', ExerciseCreateView.as_view()),
+    path('exercise_edit/<int:pk>/', ExerciseUpdateView.as_view()),
+    path('exercise_delete/<int:pk>/', ExerciseDeleteView.as_view()),
+    path('exercise_list/', ExerciseListView.as_view()),
+    path('userdata_update/<int:pk>/', UserDataViewUpdate.as_view()),
+
+
 ]

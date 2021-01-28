@@ -4,9 +4,7 @@ from datetime import date
 
 
 class UserData(models.Model):
-    first_name = models.CharField(max_length=32, unique=True, verbose_name="Imię")
-    last_name = models.CharField(max_length=32, unique=True, verbose_name="Nazwisko")
-    Age = models.IntegerField(verbose_name="Wiek")
+    age = models.IntegerField(verbose_name="Wiek")
     height = models.IntegerField(verbose_name="Wzrost")
     weight = models.FloatField(verbose_name="Waga")
     muscle_weight = models.FloatField(verbose_name="Waga mięśni", null=True)
@@ -31,12 +29,13 @@ class Exercise(models.Model):
 
 class TrainingPlan(models.Model):
     name = models.CharField(max_length=64, unique=True, verbose_name="Nazwa planu")
-    user_id = models.ForeignKey(UserData, on_delete=models.CASCADE, verbose_name="Użytkownik planu")
+    user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Użytkownik planu")
     exercise = models.ManyToManyField(Exercise, through='ExerciseSet')
 
 
 class ExerciseSet(models.Model):
-    user = models.ForeignKey(UserData, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    training_plan = models.ForeignKey(TrainingPlan, on_delete=models.CASCADE)
     exercise = models.ForeignKey(Exercise, on_delete=models.CASCADE)
     exercise_reps = models.IntegerField(verbose_name="Liczba powtórzeń w serii")
     exercise_rounds = models.IntegerField(verbose_name="Liczba serii")
@@ -46,7 +45,7 @@ class ExerciseSet(models.Model):
 
 
 class ExerciseHistory(models.Model):
-    user = models.ForeignKey(UserData, on_delete=models.CASCADE, verbose_name="Użytkownik")
+    user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Użytkownik")
     exercise = models.ForeignKey(Exercise, on_delete=models.CASCADE, verbose_name="Ćwiczenie")
     total_reps = models.IntegerField(verbose_name="Suma powtórzeń")
     weight = models.FloatField(verbose_name="Obciążenie")

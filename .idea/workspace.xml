@@ -2,24 +2,23 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="0ee7f2be-4b1a-4863-9f22-7636a3efda58" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/DrabSport/DrabSport/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/DrabSport/DrabSport/asgi.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/DrabSport/DrabSport/settings.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/DrabSport/DrabSport/urls.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/DrabSport/DrabSport/wsgi.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/DrabSport/Gym/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/DrabSport/Gym/admin.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/DrabSport/Gym/apps.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/DrabSport/Gym/migrations/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/DrabSport/Gym/models.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/DrabSport/Gym/tests.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/DrabSport/Gym/views.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/DrabSport/manage.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/DrabSport/Gym/forms.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/DrabSport/Gym/validators.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DrabSport/Gym/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/DrabSport/Gym/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DrabSport/Gym/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/DrabSport/Gym/views.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
   </component>
   <component name="FlaskConsoleOptions" custom-start-script="import sys&#10;sys.path.extend([WORKING_DIR_AND_PYTHON_PATHS])&#10;from flask.cli import ScriptInfo&#10;locals().update(ScriptInfo(create_app=None).load_app().make_shell_context())&#10;print(&quot;Python %s on %s\nApp: %s [%s]\nInstance: %s&quot; % (sys.version, sys.platform, app.import_name, app.env, app.instance_path))">
     <envs>
@@ -60,7 +59,7 @@
       <option name="presentableId" value="Default" />
       <updated>1611663176071</updated>
       <workItem from="1611663183473" duration="915000" />
-      <workItem from="1611664154540" duration="5760000" />
+      <workItem from="1611664154540" duration="9876000" />
     </task>
     <servers />
   </component>
