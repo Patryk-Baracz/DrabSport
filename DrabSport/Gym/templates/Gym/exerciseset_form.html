@@ -9,13 +9,22 @@
     {% if exerciseset %}
     {% for exercise in exerciseset.all %}
     <tr>
-        <td><a href="/exercise_detail/{{exercise.pk}}/">{{exercise.exercise.name}}</a></td><td>{{exercise.exercise_rounds}}</td><td>{{exercise.exercise_reps}}</td><td>
+        <td>{{exercise.exercise.name}}</td><td>{{exercise.exercise_rounds}}</td><td>{{exercise.exercise_reps}}</td><td>
         {{exercise.exercise_weight}}</td>
     </tr>
     {% endfor %}
     {% endif %}
 </table>
+<form method="post">
+    {% csrf_token %}
+    {{form}}
+<input type="hidden" name="next" value="{{ request.path }}">
+    <button type="submit">Dodaj</button>
+</form>
 <br>
-<a href="/exercise_set_add/{{plan.pk}}/"><button>Dodaj ćwiczenie</button></a>
+
+
+<a href="/user_plan_detail/{{plan.pk}}/"><button>Zakończ dodawanie</button></a>
+
 
 {% endblock %}

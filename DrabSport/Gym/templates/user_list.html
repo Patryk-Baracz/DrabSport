@@ -1,5 +1,8 @@
-{% extends 'base.html' %}
+{% extends 'trainer.html' %}
 {% block content %}
+
+<br><br>
+<h1>Podopieczni:</h1>
 <ul>
 {% for user in users %}
     <li>
@@ -10,5 +13,3 @@
 {% endfor %}
 </ul>
 {% endblock %}
-</body>
-</html>

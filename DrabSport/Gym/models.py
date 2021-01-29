@@ -26,6 +26,9 @@ class Exercise(models.Model):
     description = models.TextField(verbose_name="Opis ćwiczenia")
     link = models.CharField(max_length=120, verbose_name="Link do You Tube")
 
+    def __str__(self):
+        return self.name
+
 
 class TrainingPlan(models.Model):
     name = models.CharField(max_length=64, unique=True, verbose_name="Nazwa planu")

@@ -1,15 +1,15 @@
-{% extends 'base.html' %}
+{% extends 'trainer.html' %}
 {% block content %}
-
+<a href="/training_create/{{userplan.pk}}/"><button>Dodaj plan</button></a>
+<h2>Treningi użytkownika {{userplan.first_name}} {{userplan.last_name}}</h2>
 <ul>
 {% for plan in plans %}
     <li>
-        <h2>{{plan.name}}</h2><br>
+        <h3>{{plan.name}}</h3><br>
         <a href="/user_plan_detail/{{plan.pk}}/"><button>Podgląd</button></a>
     </li>
 
 {% endfor %}
 </ul>
+
 {% endblock %}
-</body>
-</html>

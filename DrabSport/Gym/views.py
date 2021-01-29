@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
+from django.views.generic.detail import DetailView
 from .models import UserData, Exercise, TrainingPlan, ExerciseSet
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
@@ -70,7 +71,7 @@ class UserDataViewCreate(LoginRequiredMixin, CreateView):
         if UserData.objects.filter(owner=self.request.user):
             last = UserData.objects.filter(owner=self.request.user).latest('id')
             if last.date == date.today():
-                return redirect(f"'userdata_edit/{last.pk}/'")
+                return redirect(f"/userdata_update/{last.pk}/")
         return super().get(request)
 
     def form_valid(self, form):
@@ -126,11 +127,26 @@ class ExerciseListView(PermissionRequiredMixin, View):
         exercises = Exercise.objects.all()
         return render(request, 'exercise_list.html', {"exercises": exercises})
 
+
 class TrainingPlanCreateView(PermissionRequiredMixin, CreateView):
     permission_required = 'Gym.add_trainingplan'
     model = TrainingPlan
-    fields = ['name', 'user']
-    success_url = '/'
+    fields = ['name']
+
+    def get_success_url(self, **kwargs):
+        next = self.request.POST.get('next', '/')
+        return next
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['plans'] = TrainingPlan.objects.filter(user=User.objects.get(pk=self.kwargs.get('pk')))
+        return context
+
+
+    def form_valid(self, form, **kwargs):
+        form.instance.user = User.objects.get(pk=self.kwargs.get('pk'))
+        return super().form_valid(form)
+
 
 class UserListView(PermissionRequiredMixin, View):
     permission_required = 'Gym.view_user'
@@ -139,19 +155,56 @@ class UserListView(PermissionRequiredMixin, View):
         users = User.objects.all()
         return render(request, 'user_list.html', {"users": users})
 
+
 class UserPlanListView(LoginRequiredMixin, View):
     def get(self, request, pk):
         plans = TrainingPlan.objects.filter(user=pk)
-        return render(request, 'user_plan_list.html', {"plans": plans})
+        userplan = User.objects.get(pk=pk)
+        return render(request, 'user_plan_list.html', {"plans": plans, "userplan": userplan})
+
 
 class TrainingPlanDetailView(LoginRequiredMixin, View):
     def get(self, request, pk):
         plan = TrainingPlan.objects.get(pk=pk)
-        print(plan.exercise)
-        return render(request, 'trainingplan_detail.html', {"plan": plan})
-
+        exercise_set = ExerciseSet.objects.filter(training_plan=plan)
+        return render(request, 'trainingplan_detail.html', {"plan": plan, "exerciseset": exercise_set})
 
 
 class ExerciseSetAddView(PermissionRequiredMixin, CreateView):
     permission_required = 'Gym.add_exerciseset'
     model = ExerciseSet
+    fields = ['exercise', 'exercise_rounds', 'exercise_reps', 'exercise_weight', 'start_date']
+
+
+    def get_success_url(self, **kwargs):
+        next = self.request.POST.get('next', '/')
+        return next
+
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['plan'] = TrainingPlan.objects.get(pk=self.kwargs.get('pk'))
+        context['exerciseset'] = ExerciseSet.objects.filter(training_plan=TrainingPlan.objects.get(pk=self.kwargs.get('pk')))
+        return context
+
+
+    def form_valid(self, form, **kwargs):
+        form.instance.user = TrainingPlan.objects.get(pk=self.kwargs.get('pk')).user
+        form.instance.training_plan = TrainingPlan.objects.get(pk=self.kwargs.get('pk'))
+        return super().form_valid(form)
+
+class Trainer(View):
+    def get(self, request):
+        return render(request, 'trainer.html')
+
+
+class ExerciseDetailView(LoginRequiredMixin, View):
+    def get(self, request, pk):
+        print(pk)
+        exercise = Exercise.objects.get(pk=pk)
+        print(exercise)
+        return render(request, 'exercise_detail.html', {"exercise": exercise})
+
+    def get_success_url(self, **kwargs):
+        next = self.request.POST.get('next', '/')
+        return next

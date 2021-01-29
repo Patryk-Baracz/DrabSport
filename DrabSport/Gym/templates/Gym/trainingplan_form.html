@@ -1,10 +1,21 @@
-{% extends 'base.html' %}
+{% extends 'trainer.html' %}
 {% block content %}
+<h2>Treningi użytkownika {{userplan.first_name}} {{userplan.last_name}}</h2>
+<ul>
+{% for plan in plans %}
+    <li>
+        <h3>{{plan.name}}</h3><br>
+        <a href="/user_plan_detail/{{plan.pk}}/"><button>Podgląd</button></a>
+    </li>
+
+{% endfor %}
+</ul>
+<br>
 <form method="post">
     {% csrf_token %}
     {{form}}
-    <input type="submit" value="Zapisz">
+<input type="hidden" name="next" value="{{ request.path }}">
+    <button type="submit">Dodaj</button>
 </form>
 {% endblock %}
-</body>
-</html>
+
