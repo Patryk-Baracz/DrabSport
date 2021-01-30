@@ -39,7 +39,7 @@ class TrainingPlan(models.Model):
 class ExerciseSet(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     training_plan = models.ForeignKey(TrainingPlan, on_delete=models.CASCADE)
-    exercise = models.ForeignKey(Exercise, on_delete=models.CASCADE)
+    exercise = models.ForeignKey(Exercise, on_delete=models.CASCADE, verbose_name='Ćwiczenie')
     exercise_reps = models.IntegerField(verbose_name="Liczba powtórzeń w serii")
     exercise_rounds = models.IntegerField(verbose_name="Liczba serii")
     exercise_weight = models.FloatField(null=True, verbose_name="Obciążenie")

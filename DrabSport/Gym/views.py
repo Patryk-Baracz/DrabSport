@@ -6,7 +6,7 @@ from .models import UserData, Exercise, TrainingPlan, ExerciseSet
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.views import View
-from .forms import LoginForm, CreateUserForm
+from .forms import LoginForm, CreateUserForm, ExerciseSetForm
 from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMixin
 from datetime import date
 
@@ -142,7 +142,6 @@ class TrainingPlanCreateView(PermissionRequiredMixin, CreateView):
         context['plans'] = TrainingPlan.objects.filter(user=User.objects.get(pk=self.kwargs.get('pk')))
         return context
 
-
     def form_valid(self, form, **kwargs):
         form.instance.user = User.objects.get(pk=self.kwargs.get('pk'))
         return super().form_valid(form)
@@ -166,7 +165,8 @@ class UserPlanListView(LoginRequiredMixin, View):
 class TrainingPlanDetailView(LoginRequiredMixin, View):
     def get(self, request, pk):
         plan = TrainingPlan.objects.get(pk=pk)
-        exercise_set = ExerciseSet.objects.filter(training_plan=plan)
+        exercise_set = ExerciseSet.objects.filter(training_plan=plan, start_date__lte=date.today()).exclude(
+            finish_date__gte=date.today())
         return render(request, 'trainingplan_detail.html', {"plan": plan, "exerciseset": exercise_set})
 
 
@@ -175,23 +175,23 @@ class ExerciseSetAddView(PermissionRequiredMixin, CreateView):
     model = ExerciseSet
     fields = ['exercise', 'exercise_rounds', 'exercise_reps', 'exercise_weight', 'start_date']
 
-
     def get_success_url(self, **kwargs):
         next = self.request.POST.get('next', '/')
         return next
 
-
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['plan'] = TrainingPlan.objects.get(pk=self.kwargs.get('pk'))
-        context['exerciseset'] = ExerciseSet.objects.filter(training_plan=TrainingPlan.objects.get(pk=self.kwargs.get('pk')))
+        context['exerciseset'] = ExerciseSet.objects.filter(
+            training_plan=TrainingPlan.objects.get(pk=self.kwargs.get('pk')), start_date__lte=date.today()).exclude(
+            finish_date__gte=date.today())
         return context
-
 
     def form_valid(self, form, **kwargs):
         form.instance.user = TrainingPlan.objects.get(pk=self.kwargs.get('pk')).user
         form.instance.training_plan = TrainingPlan.objects.get(pk=self.kwargs.get('pk'))
         return super().form_valid(form)
+
 
 class Trainer(View):
     def get(self, request):
@@ -208,3 +208,55 @@ class ExerciseDetailView(LoginRequiredMixin, View):
     def get_success_url(self, **kwargs):
         next = self.request.POST.get('next', '/')
         return next
+
+
+class ExerciseSetEditView(PermissionRequiredMixin, View):
+    permission_required = 'Gym.add_exerciseset'
+
+    def get(self, request, pk):
+        ex_exercise_set = ExerciseSet.objects.get(pk=pk)
+        exercise_name = ex_exercise_set.exercise.name
+        form = ExerciseSetForm(instance=ex_exercise_set)
+        plan = ex_exercise_set.training_plan
+        exerciseset = ExerciseSet.objects.filter(training_plan=plan, start_date__lte=date.today()).exclude(
+            finish_date__gte=date.today())
+        return render(request, 'Gym/exerciseset_form.html',
+                      {'form': form, 'plan': plan, 'exerciseset': exerciseset, 'exercise_name': exercise_name})
+
+    def post(self, request, pk):
+        ex_exercise_set = ExerciseSet.objects.get(pk=pk)
+        form = ExerciseSetForm(request.POST)
+        if form.is_valid():
+            ExerciseSet.objects.create(
+                user=ex_exercise_set.user,
+                training_plan=ex_exercise_set.training_plan,
+                exercise=form.cleaned_data['exercise'],
+                exercise_reps=form.cleaned_data['exercise_reps'],
+                exercise_rounds=form.cleaned_data['exercise_rounds'],
+                exercise_weight=form.cleaned_data['exercise_weight'],
+                start_date=form.cleaned_data['start_date'],
+                finish_date=None
+            )
+            ex_exercise_set.finish_date = form.cleaned_data['start_date']
+            ex_exercise_set.save()
+            return redirect(f'/user_plan_detail/{ex_exercise_set.training_plan.pk}')
+
+
+class ExerciseSetDeleteView(PermissionRequiredMixin, View):
+    permission_required = 'Gym.delete_exerciseset'
+
+    def get(self, request, pk):
+        ex_exercise_set = ExerciseSet.objects.get(pk=pk)
+        plan = ex_exercise_set.training_plan
+        exerciseset = ExerciseSet.objects.filter(training_plan=plan, start_date__lte=date.today()).exclude(
+            finish_date__gte=date.today())
+        exercise_name = ExerciseSet.objects.get(pk=pk).exercise.name
+        warning = f'Jeśteś pewny, że chcesz usunąć {exercise_name} z treningu?'
+        return render(request, 'trainingplan_detail.html',
+                      {'warning': warning, 'plan': plan, 'exerciseset': exerciseset})
+
+    def post(selfself, request, pk):
+        ex_exercise_set = ExerciseSet.objects.get(pk=pk)
+        ex_exercise_set.finish_date = date.today()
+        ex_exercise_set.save()
+        return redirect(f'/user_plan_detail/{ex_exercise_set.training_plan.pk}')

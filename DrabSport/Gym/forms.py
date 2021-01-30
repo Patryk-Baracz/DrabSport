@@ -1,8 +1,7 @@
 import django.forms as forms
 from django.core.validators import EmailValidator, ValidationError
 from .validators import validate_login
-
-
+from .models import ExerciseSet
 
 
 class CreateUserForm(forms.Form):
@@ -20,6 +19,13 @@ class CreateUserForm(forms.Form):
         else:
             return cleaned_data
 
+
 class LoginForm(forms.Form):
     login = forms.CharField(label="Login")
     password = forms.CharField(widget=forms.PasswordInput, label="Password")
+
+
+class ExerciseSetForm(forms.ModelForm):
+    class Meta:
+        model = ExerciseSet
+        exclude = ['user', 'training_plan', 'finish_date']
