@@ -272,15 +272,17 @@ class TrainingPlanHistoryView(PermissionRequiredMixin, View):
         exercise_sets_by_plan = {}
         for training in training_plans:
             training_exercise_sets = exercise_sets.filter(training_plan=training)
-            start_date_list = []
+            date_list = []
             exercise_set_by_date = {}
             for e_set in training_exercise_sets:
-                start_date_list.append(e_set.start_date)
-            start_date_list = list(set(start_date_list))
-            for start_date in start_date_list:
-                exercise_set_by_date[f'{start_date}'] = training_exercise_sets.filter(
-                    start_date__lte=start_date).exclude(
-                    finish_date__lte=start_date)
+                date_list.append(e_set.start_date)
+                if e_set.finish_date:
+                    date_list.append(e_set.finish_date)
+            date_list = sorted(list(set(date_list)), reverse=True)
+            for date in date_list:
+                exercise_set_by_date[f'{date}'] = training_exercise_sets.filter(
+                    start_date__lte=date).exclude(
+                    finish_date__lte=date)
             exercise_sets_by_plan[f'{training.name}'] = exercise_set_by_date
         return render(request, 'user_plan_list_history.html',
                       {"userplan": user, "exercise_sets_by_plan": exercise_sets_by_plan})

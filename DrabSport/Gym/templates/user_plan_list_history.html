@@ -5,7 +5,7 @@
     {% for training, exercise_set_by_date in exercise_sets_by_plan.items %}
     <li>
         <h2>{{training}}</h2><br>
-        <ol>
+        <ul>
             {% for date, exerciseset in exercise_set_by_date.items %}
             <li>
                 <h3>{{date}}:</h3>
@@ -29,7 +29,7 @@
                 </table>
             </li>
             {% endfor %}
-        </ol>
+        </ul>
     </li>
     {% endfor %}
 </ul>

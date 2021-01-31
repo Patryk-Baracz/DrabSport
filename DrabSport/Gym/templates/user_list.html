@@ -8,6 +8,7 @@
     <li>
         <h2>{{user.first_name}} {{user.last_name}}</h2><br>
         <a href="/user_plan_list/{{user.pk}}/"><button>Plany treningowe</button></a>
+        <a href="/user_plan_history/{{user.pk}}/"><button>Historia planów treningowych</button></a>
     </li>
 
 {% endfor %}
