@@ -17,7 +17,8 @@ from django.contrib import admin
 from django.urls import path
 from Gym.views import LoginUserView, LogoutUserView, Home, AddUserView, UserDataViewCreate, ExerciseCreateView, \
     ExerciseUpdateView, ExerciseDeleteView, ExerciseListView, UserDataViewUpdate, TrainingPlanCreateView, UserListView, \
-    UserPlanListView, TrainingPlanDetailView, ExerciseSetAddView, ExerciseDetailView, ExerciseSetEditView, ExerciseSetDeleteView
+    UserPlanListView, TrainingPlanDetailView, ExerciseSetAddView, ExerciseDetailView, ExerciseSetEditView, \
+    ExerciseSetDeleteView, TrainingPlanHistoryView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -39,6 +40,6 @@ urlpatterns = [
     path('exercise_detail/<int:pk>/', ExerciseDetailView.as_view()),
     path('exercise_set_edit/<int:pk>/', ExerciseSetEditView.as_view()),
     path('exercise_set_delete/<int:pk>/', ExerciseSetDeleteView.as_view()),
-
+    path('user_plan_history/<int:pk>/', TrainingPlanHistoryView.as_view()),
 
 ]

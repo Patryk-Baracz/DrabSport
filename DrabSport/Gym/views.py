@@ -166,7 +166,7 @@ class TrainingPlanDetailView(LoginRequiredMixin, View):
     def get(self, request, pk):
         plan = TrainingPlan.objects.get(pk=pk)
         exercise_set = ExerciseSet.objects.filter(training_plan=plan, start_date__lte=date.today()).exclude(
-            finish_date__gte=date.today())
+            finish_date__lte=date.today())
         return render(request, 'trainingplan_detail.html', {"plan": plan, "exerciseset": exercise_set})
 
 
@@ -184,7 +184,7 @@ class ExerciseSetAddView(PermissionRequiredMixin, CreateView):
         context['plan'] = TrainingPlan.objects.get(pk=self.kwargs.get('pk'))
         context['exerciseset'] = ExerciseSet.objects.filter(
             training_plan=TrainingPlan.objects.get(pk=self.kwargs.get('pk')), start_date__lte=date.today()).exclude(
-            finish_date__gte=date.today())
+            finish_date__lte=date.today())
         return context
 
     def form_valid(self, form, **kwargs):
@@ -219,7 +219,7 @@ class ExerciseSetEditView(PermissionRequiredMixin, View):
         form = ExerciseSetForm(instance=ex_exercise_set)
         plan = ex_exercise_set.training_plan
         exerciseset = ExerciseSet.objects.filter(training_plan=plan, start_date__lte=date.today()).exclude(
-            finish_date__gte=date.today())
+            finish_date__lte=date.today())
         return render(request, 'Gym/exerciseset_form.html',
                       {'form': form, 'plan': plan, 'exerciseset': exerciseset, 'exercise_name': exercise_name})
 
@@ -249,7 +249,7 @@ class ExerciseSetDeleteView(PermissionRequiredMixin, View):
         ex_exercise_set = ExerciseSet.objects.get(pk=pk)
         plan = ex_exercise_set.training_plan
         exerciseset = ExerciseSet.objects.filter(training_plan=plan, start_date__lte=date.today()).exclude(
-            finish_date__gte=date.today())
+            finish_date__lte=date.today())
         exercise_name = ExerciseSet.objects.get(pk=pk).exercise.name
         warning = f'Jeśteś pewny, że chcesz usunąć {exercise_name} z treningu?'
         return render(request, 'trainingplan_detail.html',
@@ -260,3 +260,27 @@ class ExerciseSetDeleteView(PermissionRequiredMixin, View):
         ex_exercise_set.finish_date = date.today()
         ex_exercise_set.save()
         return redirect(f'/user_plan_detail/{ex_exercise_set.training_plan.pk}')
+
+
+class TrainingPlanHistoryView(PermissionRequiredMixin, View):
+    permission_required = 'Gym.create_exerciseset'
+
+    def get(self, request, pk):
+        user = User.objects.get(pk=pk)
+        exercise_sets = ExerciseSet.objects.filter(user=user)
+        training_plans = TrainingPlan.objects.filter(user=user)
+        exercise_sets_by_plan = {}
+        for training in training_plans:
+            training_exercise_sets = exercise_sets.filter(training_plan=training)
+            start_date_list = []
+            exercise_set_by_date = {}
+            for e_set in training_exercise_sets:
+                start_date_list.append(e_set.start_date)
+            start_date_list = list(set(start_date_list))
+            for start_date in start_date_list:
+                exercise_set_by_date[f'{start_date}'] = training_exercise_sets.filter(
+                    start_date__lte=start_date).exclude(
+                    finish_date__lte=start_date)
+            exercise_sets_by_plan[f'{training.name}'] = exercise_set_by_date
+        return render(request, 'user_plan_list_history.html',
+                      {"userplan": user, "exercise_sets_by_plan": exercise_sets_by_plan})
