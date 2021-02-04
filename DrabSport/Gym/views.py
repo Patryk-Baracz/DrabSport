@@ -44,6 +44,8 @@ class LogoutUserView(View):
 
 class Home(View):
     def get(self, request):
+        if request.user.has_perm('Gym.add_exercise'):
+            return render(request, 'base.html', {"trainer": True})
         return render(request, 'base.html')
 
 
@@ -238,8 +240,10 @@ class ExerciseSetAddView(PermissionRequiredMixin, CreateView):
         return super().form_valid(form)
 
 
-class Trainer(View):
+class Trainer(PermissionRequiredMixin, View):
     """Home page just for trainer."""
+
+    permission_required = 'Gym.add_exercise'
 
     def get(self, request):
         return render(request, 'trainer.html')
@@ -252,9 +256,9 @@ class ExerciseDetailView(LoginRequiredMixin, View):
         exercise = Exercise.objects.get(pk=pk)
         return render(request, 'exercise_detail.html', {"exercise": exercise})
 
-    def get_success_url(self, **kwargs):
-        next = self.request.POST.get('next', '/')
-        return next
+    # def get_success_url(self, **kwargs):
+    #     next = self.request.POST.get('next', '/')
+    #     return next
 
 
 class ExerciseSetEditView(PermissionRequiredMixin, View):

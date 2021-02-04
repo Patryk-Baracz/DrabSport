@@ -111,11 +111,7 @@ def test_training_detail(client, authorized_user, unauthorized_user, test_exerci
 
 
 @pytest.mark.django_db
-def test_exercise_add_to_training(client, authorized_user, unauthorized_user, test_exercise, test_training_plan):
-    client.force_login(authorized_user)
-    response = client.post(f'/exercise_set_add/{test_training_plan.pk}', {'exercise': "1",
-                                                                          'exercise_reps': '1',
-                                                                          'exercise_rounds': '1',
-                                                                          'exercise_weight': '1',
-                                                                          'start_date': "2021-02-04"})
-    assert ExerciseSet.objects.get(user=User.objects.get(username="Tester")).exercise_reps == '1'
+def test_exercise_detail(client, unauthorized_user, test_exercise):
+    client.force_login(unauthorized_user)
+    response = client.get(f'/exercise_detail/{test_exercise.pk}/')
+    assert response.context['exercise'].name == 'test'
