@@ -117,7 +117,7 @@ STATICFILES_DIRS = [
 ]
 
 try:
-    from scrumlab.local_settings import DATABASES
+    from .local_settings import DATABASES
 except ModuleNotFoundError:
     print("Brak konfiguracji bazy danych w pliku local_settings.py!")
     print("Uzupełnij dane i spróbuj ponownie!")
