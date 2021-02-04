@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h2>Wybierz trening:</h2>
+<ul>
+{% for plan in plans %}
+    <li>
+        <h3>{{plan.name}}</h3><br>
+        <a href="/user_training/{{plan.pk}}/"><button>Wybierz</button></a>
+    </li>
+
+{% endfor %}
+</ul>
+
+{% endblock %}

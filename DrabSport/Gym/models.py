@@ -42,7 +42,7 @@ class ExerciseSet(models.Model):
     exercise = models.ForeignKey(Exercise, on_delete=models.CASCADE, verbose_name='Ćwiczenie')
     exercise_reps = models.IntegerField(verbose_name="Liczba powtórzeń w serii")
     exercise_rounds = models.IntegerField(verbose_name="Liczba serii")
-    exercise_weight = models.FloatField(null=True, verbose_name="Obciążenie")
+    exercise_weight = models.FloatField(null=True, blank=True, verbose_name="Obciążenie")
     start_date = models.DateField(default=date.today, verbose_name="Data rozpoczęcia")
     finish_date = models.DateField(null=True, verbose_name="Data zakończenia")
 

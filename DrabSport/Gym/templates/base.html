@@ -18,14 +18,17 @@
     <a href="/login/">
         <button>Zaloguj</button>
     </a>
-    {% endif %}
+
     <a href="/create_user/">
         <button>Zarejestruj</button>
     </a>
-
+    {% endif %}
     {% if user.username %}
     <a href="/user_data/">
         <button>Twoje Pomiary</button>
+    </a>
+    <a href="/user_training_list/">
+        <button>Trening</button>
     </a>
     {% if perms.Gym.view_user %}
     <a href="/user_list/">

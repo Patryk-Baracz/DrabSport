@@ -1,7 +1,6 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
-from django.views.generic.detail import DetailView
 from .models import UserData, Exercise, TrainingPlan, ExerciseSet
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
@@ -12,11 +11,17 @@ from datetime import date
 
 
 class LoginUserView(View):
+    """Logging screen."""
+
     def get(self, request):
+        """Two fields to fill: 'login' and 'password'."""
+
         form = LoginForm()
         return render(request, "login.html", {"form": form})
 
     def post(self, request):
+        """Checking database for user with filled login and password."""
+
         rec_form = LoginForm(request.POST)
         if rec_form.is_valid():
             user_name = rec_form.cleaned_data['login']
@@ -30,6 +35,8 @@ class LoginUserView(View):
 
 
 class LogoutUserView(View):
+    """Logging out current user."""
+
     def get(self, request):
         logout(request)
         return redirect('/')
@@ -41,11 +48,17 @@ class Home(View):
 
 
 class AddUserView(View):
+    """Registration new user."""
+
     def get(self, request):
+        """Form to fill."""
+
         form = CreateUserForm()
         return render(request, 'create_user.html', {"form": form})
 
     def post(self, request):
+        """If form is valid, adding new user to database."""
+
         form = CreateUserForm(request.POST)
         if form.is_valid():
             User.objects.create_user(
@@ -59,6 +72,8 @@ class AddUserView(View):
 
 
 class UserDataViewCreate(LoginRequiredMixin, CreateView):
+    """Adding users body parameters to database"""
+
     login_url = '/login/'
     redirect_field_name = 'redirect_to'
     model = UserData
@@ -68,6 +83,8 @@ class UserDataViewCreate(LoginRequiredMixin, CreateView):
     success_url = '/'
 
     def get(self, request):
+        """ Checking if user already added data today."""
+
         if UserData.objects.filter(owner=self.request.user):
             last = UserData.objects.filter(owner=self.request.user).latest('id')
             if last.date == date.today():
@@ -79,6 +96,8 @@ class UserDataViewCreate(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
     def get_initial(self):
+        """Form is filled with latest data of logged user."""
+
         if UserData.objects.filter(owner=self.request.user):
             last_data = UserData.objects.filter(owner=self.request.user).latest('id')
             FIELDS = ['age', 'height', 'weight', 'muscle_weight', 'fat_weight', 'metabolic_age',
@@ -91,6 +110,8 @@ class UserDataViewCreate(LoginRequiredMixin, CreateView):
 
 
 class UserDataViewUpdate(LoginRequiredMixin, UpdateView):
+    """If user already added body parameters today, he edit those data nor create new."""
+
     login_url = '/login/'
     redirect_field_name = 'redirect_to'
     model = UserData
@@ -101,6 +122,8 @@ class UserDataViewUpdate(LoginRequiredMixin, UpdateView):
 
 
 class ExerciseCreateView(PermissionRequiredMixin, CreateView):
+    """Adding new exercise objects to database."""
+
     permission_required = 'Gym.add_exercise'
     model = Exercise
     fields = ['name', 'description', 'link']
@@ -108,6 +131,8 @@ class ExerciseCreateView(PermissionRequiredMixin, CreateView):
 
 
 class ExerciseUpdateView(PermissionRequiredMixin, UpdateView):
+    """Editing exercise objects in database."""
+
     permission_required = 'Gym.update_exercise'
     model = Exercise
     fields = ['name', 'description', 'link']
@@ -115,12 +140,16 @@ class ExerciseUpdateView(PermissionRequiredMixin, UpdateView):
 
 
 class ExerciseDeleteView(PermissionRequiredMixin, DeleteView):
+    """Removing an exercise object from database."""
+
     permission_required = 'Gym.delete_exercise'
     model = Exercise
     success_url = '/exercise_list/'
 
 
 class ExerciseListView(PermissionRequiredMixin, View):
+    """List of all exercise objects in database."""
+
     permission_required = 'Gym.view_exercise'
 
     def get(self, request):
@@ -129,15 +158,21 @@ class ExerciseListView(PermissionRequiredMixin, View):
 
 
 class TrainingPlanCreateView(PermissionRequiredMixin, CreateView):
+    """Adding training plan for a specific user to databse."""
+
     permission_required = 'Gym.add_trainingplan'
     model = TrainingPlan
     fields = ['name']
 
     def get_success_url(self, **kwargs):
+        """Redirecting to get after successful adding plan."""
+
         next = self.request.POST.get('next', '/')
         return next
 
     def get_context_data(self, **kwargs):
+        """Allowing to see all training plans for specyfic user."""
+
         context = super().get_context_data(**kwargs)
         context['plans'] = TrainingPlan.objects.filter(user=User.objects.get(pk=self.kwargs.get('pk')))
         return context
@@ -148,6 +183,8 @@ class TrainingPlanCreateView(PermissionRequiredMixin, CreateView):
 
 
 class UserListView(PermissionRequiredMixin, View):
+    """ List of all users. """
+
     permission_required = 'Gym.view_user'
 
     def get(self, request):
@@ -156,6 +193,8 @@ class UserListView(PermissionRequiredMixin, View):
 
 
 class UserPlanListView(LoginRequiredMixin, View):
+    """ List of all training plans of specific user. """
+
     def get(self, request, pk):
         plans = TrainingPlan.objects.filter(user=pk)
         userplan = User.objects.get(pk=pk)
@@ -163,6 +202,8 @@ class UserPlanListView(LoginRequiredMixin, View):
 
 
 class TrainingPlanDetailView(LoginRequiredMixin, View):
+    """Shows exercises, reps, etc. in specific training plan."""
+
     def get(self, request, pk):
         plan = TrainingPlan.objects.get(pk=pk)
         exercise_set = ExerciseSet.objects.filter(training_plan=plan, start_date__lte=date.today()).exclude(
@@ -171,6 +212,8 @@ class TrainingPlanDetailView(LoginRequiredMixin, View):
 
 
 class ExerciseSetAddView(PermissionRequiredMixin, CreateView):
+    """Adding exercises with details to specific training plan"""
+
     permission_required = 'Gym.add_exerciseset'
     model = ExerciseSet
     fields = ['exercise', 'exercise_rounds', 'exercise_reps', 'exercise_weight', 'start_date']
@@ -180,6 +223,8 @@ class ExerciseSetAddView(PermissionRequiredMixin, CreateView):
         return next
 
     def get_context_data(self, **kwargs):
+        """Catching context for training plan detail view."""
+
         context = super().get_context_data(**kwargs)
         context['plan'] = TrainingPlan.objects.get(pk=self.kwargs.get('pk'))
         context['exerciseset'] = ExerciseSet.objects.filter(
@@ -194,15 +239,17 @@ class ExerciseSetAddView(PermissionRequiredMixin, CreateView):
 
 
 class Trainer(View):
+    """Home page just for trainer."""
+
     def get(self, request):
         return render(request, 'trainer.html')
 
 
 class ExerciseDetailView(LoginRequiredMixin, View):
+    """Showing name, description and link to YouTube of an exercise."""
+
     def get(self, request, pk):
-        print(pk)
         exercise = Exercise.objects.get(pk=pk)
-        print(exercise)
         return render(request, 'exercise_detail.html', {"exercise": exercise})
 
     def get_success_url(self, **kwargs):
@@ -211,9 +258,13 @@ class ExerciseDetailView(LoginRequiredMixin, View):
 
 
 class ExerciseSetEditView(PermissionRequiredMixin, View):
+    """Creating new exerciseset object with changed data."""
+
     permission_required = 'Gym.add_exerciseset'
 
     def get(self, request, pk):
+        """Fills edited exerciseset details into form"""
+
         ex_exercise_set = ExerciseSet.objects.get(pk=pk)
         exercise_name = ex_exercise_set.exercise.name
         form = ExerciseSetForm(instance=ex_exercise_set)
@@ -243,6 +294,8 @@ class ExerciseSetEditView(PermissionRequiredMixin, View):
 
 
 class ExerciseSetDeleteView(PermissionRequiredMixin, View):
+    """Removing Exercise from training plan."""
+
     permission_required = 'Gym.delete_exerciseset'
 
     def get(self, request, pk):
@@ -256,6 +309,8 @@ class ExerciseSetDeleteView(PermissionRequiredMixin, View):
                       {'warning': warning, 'plan': plan, 'exerciseset': exerciseset})
 
     def post(selfself, request, pk):
+        """Setting finish date of Exerciseset on today so it isn't listed in actual training anymore."""
+
         ex_exercise_set = ExerciseSet.objects.get(pk=pk)
         ex_exercise_set.finish_date = date.today()
         ex_exercise_set.save()
@@ -263,6 +318,8 @@ class ExerciseSetDeleteView(PermissionRequiredMixin, View):
 
 
 class TrainingPlanHistoryView(PermissionRequiredMixin, View):
+    """Presenting all variants of all training plans for a user sorted by date."""
+
     permission_required = 'Gym.create_exerciseset'
 
     def get(self, request, pk):
@@ -286,3 +343,21 @@ class TrainingPlanHistoryView(PermissionRequiredMixin, View):
             exercise_sets_by_plan[f'{training.name}'] = exercise_set_by_date
         return render(request, 'user_plan_list_history.html',
                       {"userplan": user, "exercise_sets_by_plan": exercise_sets_by_plan})
+
+
+class UserTrainingList(LoginRequiredMixin, View):
+    """List of actual trainings for user."""
+
+    def get(self, request):
+        plans = TrainingPlan.objects.filter(user=request.user)
+        return render(request, 'user_training_list.html', {"plans": plans})
+
+
+class UserTraining(LoginRequiredMixin, View):
+    """Details of chosen workout for user."""
+
+    def get(self, request, pk):
+        plan = TrainingPlan.objects.get(pk=pk)
+        exercise_set = ExerciseSet.objects.filter(training_plan=plan, start_date__lte=date.today()).exclude(
+            finish_date__lte=date.today())
+        return render(request, 'user_training.html', {'exerciseset': exercise_set})

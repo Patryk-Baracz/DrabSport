@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>{{plan.name}}</h1><br>
+
+<ol>
+    {% if exerciseset %}
+    {% for exercise in exerciseset.all %}
+    <li id="{{exercise.pk}}">
+       <h2> <a href="/exercise_detail/{{exercise.exercise.pk}}/">{{exercise.exercise.name}}</a></h2><br>
+        <b>Ilość serii: </b> {{exercise.exercise_rounds}}
+        <b>Ilość powtórzeń w serii: </b> {{exercise.exercise_reps}}
+        <b>Obciążenie: </b> {{exercise.exercise_weight}}
+    </li>
+    {% endfor %}
+    {% endif %}
+</ol>
+
+{% endblock %}

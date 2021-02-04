@@ -1,24 +1,9 @@
-"""DrabSport URL Configuration
-
-The `urlpatterns` list routes URLs to views. For more information please see:
-    https://docs.djangoproject.com/en/3.0/topics/http/urls/
-Examples:
-Function views
-    1. Add an import:  from my_app import views
-    2. Add a URL to urlpatterns:  path('', views.home, name='home')
-Class-based views
-    1. Add an import:  from other_app.views import Home
-    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
-Including another URLconf
-    1. Import the include() function: from django.urls import include, path
-    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
-"""
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
 from Gym.views import LoginUserView, LogoutUserView, Home, AddUserView, UserDataViewCreate, ExerciseCreateView, \
     ExerciseUpdateView, ExerciseDeleteView, ExerciseListView, UserDataViewUpdate, TrainingPlanCreateView, UserListView, \
     UserPlanListView, TrainingPlanDetailView, ExerciseSetAddView, ExerciseDetailView, ExerciseSetEditView, \
-    ExerciseSetDeleteView, TrainingPlanHistoryView
+    ExerciseSetDeleteView, TrainingPlanHistoryView, UserTrainingList, UserTraining
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -41,5 +26,9 @@ urlpatterns = [
     path('exercise_set_edit/<int:pk>/', ExerciseSetEditView.as_view()),
     path('exercise_set_delete/<int:pk>/', ExerciseSetDeleteView.as_view()),
     path('user_plan_history/<int:pk>/', TrainingPlanHistoryView.as_view()),
+    path('user_training_list/', UserTrainingList.as_view()),
+    path('user_training/<int:pk>/', UserTraining.as_view()),
+    path('api_exerciseset/', include('Gym.urls')),
+
 
 ]
