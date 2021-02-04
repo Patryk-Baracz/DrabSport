@@ -1,5 +1,6 @@
 import pytest
 from .models import UserData, Exercise, TrainingPlan, ExerciseSet
+from django.contrib.auth.models import User
 import datetime
 
 
@@ -78,17 +79,20 @@ def test_training_plan_add_missing_permission(client, unauthorized_user):
     response = client.post(f'/training_create/{unauthorized_user.pk}/', {'name': "test plan"})
     assert response.status_code == 403
 
+
 @pytest.mark.django_db
 def test_user_list(client, authorized_user):
     client.force_login(authorized_user)
     response = client.get('/user_list/')
     assert len(response.context['users']) != 0
 
+
 @pytest.mark.django_db
 def test_user_list_missing_permission(client, unauthorized_user):
     client.force_login(unauthorized_user)
     response = client.get('/user_list/')
     assert response.status_code == 403
+
 
 @pytest.mark.django_db
 def test_user_plan_list(client, authorized_user, unauthorized_user):
@@ -97,9 +101,21 @@ def test_user_plan_list(client, authorized_user, unauthorized_user):
     response = client.get(f'/user_plan_list/{unauthorized_user.pk}/')
     assert len(response.context['plans']) != 0
 
+
 @pytest.mark.django_db
-def test_training_detail(client, authorized_user, unauthorized_user, test_exercise, test_training_plan, test_exercise_set):
+def test_training_detail(client, authorized_user, unauthorized_user, test_exercise, test_training_plan,
+                         test_exercise_set):
     client.force_login(authorized_user)
     response = client.get(f'/user_plan_detail/{test_training_plan.pk}/')
     assert response.context['plan'].name == 'test training'
 
+
+@pytest.mark.django_db
+def test_exercise_add_to_training(client, authorized_user, unauthorized_user, test_exercise, test_training_plan):
+    client.force_login(authorized_user)
+    response = client.post(f'/exercise_set_add/{test_training_plan.pk}', {'exercise': "1",
+                                                                          'exercise_reps': '1',
+                                                                          'exercise_rounds': '1',
+                                                                          'exercise_weight': '1',
+                                                                          'start_date': "2021-02-04"})
+    assert ExerciseSet.objects.get(user=User.objects.get(username="Tester")).exercise_reps == '1'
