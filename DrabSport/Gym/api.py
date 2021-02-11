@@ -1,5 +1,5 @@
-from .models import ExerciseSet
-from .serializers import ExerciseSetSerializer
+from .models import ExerciseSet, ExerciseHistory
+from .serializers import ExerciseSetSerializer, ExerciseHistorySerializer
 from rest_framework import permissions, renderers, viewsets
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -19,3 +19,17 @@ class ExercisesetViewSet(viewsets.ModelViewSet):
         permissions.AllowAny
     ]
     serializer_class = ExerciseSetSerializer
+
+@api_view(['GET'])
+def api_root(request, format=None):
+    return Response({
+        'exercisehistory': reverse('exercisehistory-list', request=request, format=format)
+    })
+
+
+class ExerciseHistoryViewSet(viewsets.ModelViewSet):
+    queryset = ExerciseHistory.objects.all()
+    permission_classes = [
+        permissions.AllowAny
+    ]
+    serializer_class = ExerciseHistorySerializer

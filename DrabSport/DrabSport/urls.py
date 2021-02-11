@@ -29,6 +29,7 @@ urlpatterns = [
     path('user_training_list/', UserTrainingList.as_view()),
     path('user_training/<int:pk>/', UserTraining.as_view()),
     path('api_exerciseset/', include('Gym.urls')),
+    path('api_exercisehistory/', include('Gym.urls')),
 
 
 ]

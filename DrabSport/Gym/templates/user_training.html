@@ -5,14 +5,27 @@
 <ol>
     {% if exerciseset %}
     {% for exercise in exerciseset.all %}
-    <li id="{{exercise.pk}}">
+    <li>
        <h2> <a href="/exercise_detail/{{exercise.exercise.pk}}/">{{exercise.exercise.name}}</a></h2><br>
-        <b>Ilość serii: </b> {{exercise.exercise_rounds}}
-        <b>Ilość powtórzeń w serii: </b> {{exercise.exercise_reps}}
-        <b>Obciążenie: </b> {{exercise.exercise_weight}}
+        <table  id="{{exercise.pk}}">
+            <tr>
+                <th> </th>
+                <th><b>Liczba serii</b></th>
+                <th><b>Liczba powtórzeń</b></th>
+                <th><b>Obciążenie</b></th>
+            </tr>
+            <tr>
+                <td><b>Planowo: </b></td>
+                <td>{{exercise.exercise_rounds}}</td>
+                <td>{{exercise.exercise_reps}}</td>
+                <td>{{exercise.exercise_weight}}</td>
+            </tr>
+        </table>
     </li>
     {% endfor %}
     {% endif %}
 </ol>
 
+<script src="/static/js/script.js"></script>
 {% endblock %}
+
