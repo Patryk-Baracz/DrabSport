@@ -3,7 +3,7 @@ const apihost = 'http://0.0.0.0.:8000';
 
 function apiListExerciseHistory() {
     return fetch(
-        apihost + '/api_exercisehistory/',
+        apihost + '/api_exercisehistory/exercisehistory/',
     ).then(
         function (resp) {
             if (!resp.ok) {
