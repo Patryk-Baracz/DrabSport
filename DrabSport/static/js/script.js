@@ -26,7 +26,7 @@ function renderExercise(exId, exUser, exReps, exWeight, exDate, exExercise) {
 document.addEventListener('DOMContentLoaded', () => {
     apiListExerciseHistory().then(
          (response) => {
-            response.data.forEach(
+            response.forEach(
                 (exercise) => {
                     renderExercise(exercise.id, exercise.user, exercise.total_reps, exercise.weight, exercise.date, exercise.exercise)
                 }
@@ -34,3 +34,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     );
 });
+
+
+BURP
+try except suspissious operations
+connector do bazy
+mokup local settingsy
